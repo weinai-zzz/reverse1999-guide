@@ -43,6 +43,7 @@ type Character = {
   resonance: {
     img?: string | null;
     desc: string;
+    resonance_code?: string | null; // 👈 新增
   };
   spells: Spell[];
   ritual: Ritual;
@@ -216,7 +217,7 @@ function CharacterPanel({ char, onClose }: { char: Character; onClose: () => voi
           <div style={{ background: "#1a1a1a", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a", display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
             <ImagePlaceholder label="共鳴圖" src={char.resonance.img || null} w={120} h={120} />
             <div style={{ display: "grid", alignItems: "center", flex: "1 1 180px", minWidth: 0 }}>
-              <p style={{ margin: 0, color: "#aaa", fontSize: 13, lineHeight: 1.8, overflowWrap: "anywhere", wordBreak: "break-word" }}>AjQwNDIqUChROkQnRfQkOgQpBSQBLRFEAEUg</p>
+              <p style={{ margin: 0, color: "#7ec88a",fontSize: 13, lineHeight: 1.8, overflowWrap: "anywhere", wordBreak: "break-word" }}>{char.resonance.resonance_code}</p>
               <p style={{ margin: 0, color: "#aaa", fontSize: 13, lineHeight: 1.8, overflowWrap: "anywhere", wordBreak: "break-word" }}>{char.resonance.desc}</p>
             </div>
           </div>
