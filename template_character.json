@@ -1,0 +1,70 @@
+{
+  "type": "character",
+  "name": "露西",
+  "star": 6,
+  "insight": "智",
+  "role": "輸出",
+  "damage_type": "精神創傷",
+  "img": "/images/characters/lucy.png",
+  "tags": ["電能"],
+  "bio": "來自未來的電能少女，擁有操控閃電的能力。個性活潑直率，戰鬥時爆發力十足，是隊伍中的核心輸出角色。",
+  "psycubes": [
+    {
+      "name": "我來輸出",
+      "img": "/images/psycubes/lucy_psycube1.png",
+      "desc": "降低敵方防禦15%，持續2回合"
+    },
+    {
+      "name": "星際旅程",
+      "img": "/images/psycubes/lucy_psycube2.png",
+      "desc": "提升自身攻擊力20%"
+    }
+  ],
+  "resonance": {
+    "img": "/images/resonance/lucy_resonance.png",
+    "desc": "提高露西暴擊率至75%，增加爆擊倍率，有效提升整體輸出上限"
+  },
+  "spells": [
+    {
+      "name": "電你",
+      "img": "/images/spells/lucy_spell1.png",
+      "initial": {
+        "desc": [
+          "【一階】增加露西攻擊力15%，持續2回合",
+          "【二階】增加露西攻擊力25%，持續3回合",
+          "【三階】增加露西攻擊力40%，持續3回合並為隊友提供電能增益"
+        ]
+      },
+      "sublimation": {
+        "img": "/images/spells/lucy_spell1_sub.png",
+        "desc": ["【一階】昇華後...", "【二階】昇華後...", "【三階】昇華後..."]
+      },
+      "types": ["#Attack"]
+    },
+    {
+      "name": "雷霆降臨",
+      "img": "/images/spells/lucy_spell2.png",
+      "initial": {
+        "desc": [
+          "【一階】對單一目標造成精神創傷",
+          "【二階】對單一目標造成精神創傷並追加1層電能疊層",
+          "【三階】對單一目標造成精神創傷，追加2層電能疊層"
+        ]
+      },
+      "sublimation": null,
+      "types": ["#Debuff"]
+    }
+  ],
+  "ritual": {
+    "name": "末日審判·雷",
+    "img": "/images/ritual/lucy_ritual.png",
+    "initial": {
+      "desc": "對全體敵人造成大量精神創傷，觸發電能爆發，傷害倍率極高"
+    },
+    "sublimation": {
+      "img": "/images/ritual/lucy_ritual_sub.png",
+      "desc": "昇華後至終儀式說明"
+    },
+    "types": ["#ultimate"]
+  }
+}
