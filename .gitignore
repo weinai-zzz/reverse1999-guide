@@ -23,6 +23,12 @@
 # misc
 .DS_Store
 *.pem
+docs/
+template_character.json
+template_team.json
+tsconfig.json
+CLAUDE.md
+AGENTS.md
 
 # debug
 npm-debug.log*
