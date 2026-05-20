@@ -154,6 +154,10 @@ const ImagePlaceholder = ({ label, w = "100%", h = 80, src }: { label: string; w
 function CharacterPanel({ char, onClose }: { char: Character; onClose: () => void }) {
   // 新增這行
   const [spellMode, setSpellMode] = useState("initial");
+
+  // 每張神秘術卡片的階段 (1/2/3)，key 為 spell index，預設 1 階
+    const [spellLevels, setSpellLevels] = useState<Record<number, number>>({});
+
   // 判斷這個角色是否有任何昇華內容
   const hasSublimation =
     char.spells?.some((s) => s.sublimation) ||
@@ -259,6 +263,13 @@ function CharacterPanel({ char, onClose }: { char: Character; onClose: () => voi
             ? s.sublimation.img
             : s.img;
 
+            // 此卡片的階段描述陣列
+            const descArr = Array.isArray(modeData.desc) ? modeData.desc : [modeData.desc];
+            const totalLevels = descArr.length;
+            const currentLevel = spellLevels[i] ?? 1; // 預設第 1 階
+            const displayDesc = descArr[currentLevel - 1];
+
+
           return (
             <div key={i} style={{ background: "#1a1a1a", borderRadius: 8, padding: 12, marginBottom: 10, border: `1px solid ${spellMode === "sublimation" && s.sublimation ? "#4A148C44" : "#2a2a2a"}` }}>
               {/* 上方：圖片區 + 右側說明 */}
@@ -277,19 +288,38 @@ function CharacterPanel({ char, onClose }: { char: Character; onClose: () => voi
                   </div>
                 </div>
 
-                {/* 右側：三階段說明 */}
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4, justifyContent: "center" }}>
-                  {(Array.isArray(modeData.desc) ? modeData.desc : [modeData.desc]).map((d, di) => (
-                    <div key={di} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                      {Array.isArray(modeData.desc) && (
-                        <span style={{ fontSize: 10, fontWeight: 700, color: "#444", background: "#222", borderRadius: 3, padding: "1px 5px", marginTop: 1, flexShrink: 0 }}>
-                          {["✦", "✦✦", "✦✦✦"][di]}
-                        </span>
-                      )}
-                      <p style={{ margin: 0, color: "#888", fontSize: 13, lineHeight: 1.6 }}>{d}</p>
+                {/* 右側：階段按鈕 + 說明 */}
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6, justifyContent: "center" }}>
+                  {/* 1/2/3 階按鈕（只有多階時才顯示） */}
+                  {totalLevels > 1 && (
+                    <div style={{ display: "flex", gap: 4 }}>
+                      {Array.from({ length: totalLevels }, (_, li) => {
+                        const lv = li + 1;
+                        const active = currentLevel === lv;
+                        const stars = ["✦", "✦✦", "✦✦✦"][li];
+                        return (
+                          <button
+                            key={lv}
+                            onClick={() => setSpellLevels(prev => ({ ...prev, [i]: lv }))}
+                            style={{
+                              padding: "2px 9px", borderRadius: 4, fontSize: 11, fontWeight: 700,
+                              cursor: "pointer", transition: "all 0.15s",
+                              border: `1px solid ${active ? "#FFB300" : "#333"}`,
+                              background: active ? "#FFB30022" : "transparent",
+                              color: active ? "#FFB300" : "#555",
+                            }}
+                          >
+                            {stars}
+                          </button>
+                        );
+                      })}
                     </div>
-                  ))}
+                  )}
+                  {/* 當前階段說明 */}
+                  <p style={{ margin: 0, color: "#888", fontSize: 13, lineHeight: 1.6 }}>{displayDesc}</p>
                 </div>
+
+
               </div>
             </div>
           );
@@ -310,7 +340,7 @@ function CharacterPanel({ char, onClose }: { char: Character; onClose: () => voi
            return (
             <div style={{ background: "linear-gradient(135deg,#1a1200 0%,#1a1a1a 100%)", borderRadius: 8, padding: 12, border: `1px solid ${spellMode === "sublimation" && char.ritual.sublimation ? "#9C27B0" : "#444"}` }}>
               {/* 上方：圖片區 + 右側說明 */}
-              <div style={{ display: "flex", gap: 12 }}>
+              <div style={{ display: "flex", gap: 8 }}>
                 {/* 左側：圖片 + 名稱 + tag */}
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, flexShrink: 0 }}>
                   <ImagePlaceholder label="儀式圖" src={ritualImg} w={60} h={100} />
