@@ -43,7 +43,9 @@ type Character = {
   resonance: {
     img?: string | null;
     desc: string;
-    resonance_code?: string | null; // 👈 新增
+    resonance_code?: string | null; //共鳴推薦碼
+    r10?: { img?: string | null; desc?: string; resonance_code?: string | null };//共鳴10
+    r13?: { img?: string | null; desc?: string; resonance_code?: string | null };//共鳴13
   };
   spells: Spell[];
   ritual: Ritual;
@@ -155,6 +157,9 @@ function CharacterPanel({ char, onClose }: { char: Character; onClose: () => voi
   // 新增這行
   const [spellMode, setSpellMode] = useState("initial");
 
+  // 預設顯示共鳴10
+  const [resonanceTab, setResonanceTab] = useState<"r10" | "r13">("r10");
+
   // 每張神秘術卡片的階段 (1/2/3)，key 為 spell index，預設 1 階
     const [spellLevels, setSpellLevels] = useState<Record<number, number>>({});
 
@@ -217,14 +222,59 @@ function CharacterPanel({ char, onClose }: { char: Character; onClose: () => voi
         </Section>
 
         {/* Resonance */}
-        <Section title="共鳴擺法">
-          <div style={{ background: "#1a1a1a", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a", display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-            <ImagePlaceholder label="共鳴圖" src={char.resonance.img || null} w={120} h={120} />
-            <div style={{ display: "grid", alignItems: "center", flex: "1 1 180px", minWidth: 0 }}>
-              <p style={{ margin: 0, color: "#7ec88a",fontSize: 13, lineHeight: 1.8, overflowWrap: "anywhere", wordBreak: "break-word" }}>{char.resonance.resonance_code}</p>
-              <p style={{ margin: 0, color: "#aaa", fontSize: 13, lineHeight: 1.8, overflowWrap: "anywhere", wordBreak: "break-word" }}>{char.resonance.desc}</p>
+        <Section>
+            {/* 標題列 + 共鳴推薦按鈕（右側） */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+            <h3 style={{ fontSize: 13, fontWeight: 700, color: "#666", textTransform: "uppercase", letterSpacing: "0.1em", margin: 0 }}>共鳴擺法</h3>
+            <div style={{ display: "flex", gap: 4 }}>
+              {(["共鳴10", "共鳴13+"] as const).map((label) => {
+                const mod = label === "共鳴10" ? "r10" : "r13";
+                const active = resonanceTab === mod;
+                return (
+                  <button
+                    key={label}
+                    onClick={() => setResonanceTab(mod)}
+                    style={{
+                      padding: "3px 10px", borderRadius: 4, fontSize: 11, fontWeight: 600,
+                      cursor: "pointer", transition: "all 0.15s",
+                      border: `1px solid ${active ? "#fff" : "#444"}`,
+                      background: active ? "#fff" : "transparent",
+                      color: active ? "#000" : "#666",
+                    }}
+                  >{label}</button>
+                );
+              })}
             </div>
           </div>
+
+          {/* 依 tab 顯示對應資料，fallback 回預設欄位 */}
+          {(() => {
+            const tabData = resonanceTab === "r10" ? char.resonance.r10 : char.resonance.r13;
+            const img = tabData?.img ?? char.resonance.img ?? null;
+            const desc = tabData?.desc ?? char.resonance.desc;
+            const code = tabData?.resonance_code ?? char.resonance.resonance_code;
+            return (
+              <div style={{ background: "#1a1a1a", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a", display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+                <ImagePlaceholder label="共鳴圖" src={img} w={120} h={120} />
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: "1 1 180px", minWidth: 0 }}>
+                  {/* 推薦碼 */}
+                  {code && (
+                    <div style={{ background: "#0d1117", border: "1px solid #2a3a2a", borderRadius: 6, padding: "8px 12px" }}>
+                      <p style={{ margin: "0 0 4px", fontSize: 11, color: "#2e7d32", fontWeight: 700, letterSpacing: "0.06em" }}>🔗 共鳴推薦碼</p>
+                      <p style={{ margin: 0, fontSize: 12, color: "#7ec88a", fontFamily: "monospace",
+                        letterSpacing: "0.05em", overflowWrap: "anywhere", wordBreak: "break-all", lineHeight: 1.6,
+                      }}>{code}</p>
+                    </div>
+                  )}
+                  {/* 說明 */}
+                  <p style={{ margin: 0, color: "#aaa", fontSize: 13, lineHeight: 1.8, overflowWrap: "anywhere", wordBreak: "break-word" }}>{desc}</p>
+                </div>
+              </div>
+            );
+          })()}
+
+
+
         </Section>
 
         {/* Spells */}
